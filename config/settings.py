@@ -30,6 +30,8 @@ INSTALLED_APPS += [
     'rest_framework',
     'django_filters',
     'corsheaders', # чтоб фронт мог принимать апишки
+    'api',
+    'common',
 ]
 
 
