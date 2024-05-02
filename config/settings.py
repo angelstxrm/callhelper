@@ -2,8 +2,10 @@ from datetime import timedelta
 import os
 import environ
 
+
 root = environ.Path(__file__) - 2
 env = environ.Env()
+
 
 environ.Env.read_env(env.str(root(), '.env'))
 
