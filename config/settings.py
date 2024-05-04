@@ -34,14 +34,15 @@ INSTALLED_APPS += [
     'django_filters',
     'corsheaders', # чтоб фронт мог принимать апишки
     'djoser',
+    'phonenumber_field',
 ]
 
 # My apps
 INSTALLED_APPS += [
     'api',
     'common',
-    'breaks',
     'users',
+    'breaks',
 ]
 
 # After apps
@@ -120,11 +121,17 @@ AUTH_PASSWORD_VALIDATORS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# AUTHENTICATION
+AUTH_USER_MODEL = 'users.User'
+AUTHENTICATION_BACKENDS = ('users.backends.AuthBackend',)
+
+
 # LOCALIZATION
 LANGUAGE_CODE = 'RU'
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
+
 
 # STATIC AND MEDIA
 STATIC_URL = '/static/'
