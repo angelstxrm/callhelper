@@ -17,7 +17,7 @@ class OrganisationAdmin(admin.ModelAdmin):
 
 
 @admin.register(groups.Group)
-class OrganisationAdmin(admin.ModelAdmin):
+class GroupAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'manager', 'min_active',)
 
 
