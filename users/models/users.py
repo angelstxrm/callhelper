@@ -1,8 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
 from phonenumber_field.modelfields import PhoneNumberField
 
 from users.models.managers import CustomUserManager
+from users.models.profile import Profile
 
 class User(AbstractUser):
     username = models.CharField('Никнейм', max_length=64, unique=True, null=True, blank=True)
@@ -24,3 +28,8 @@ class User(AbstractUser):
     
     def __str__(self):
         return f'{self.full_name} ({self.pk})'
+    
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if not hasattr(instance, 'profile'):
+        Profile.objects.create(user=instance)
