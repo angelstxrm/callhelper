@@ -1,8 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.db import transaction
 
 from rest_framework import serializers
 from rest_framework.exceptions import ParseError
+
+from users.serializers.nested.profile import ProfileUpdateSerializers, ProfileShortSerializers
 
 User = get_user_model()
 
@@ -59,3 +62,54 @@ class ChangePasswordSerializers(serializers.ModelSerializer):
         instance.set_password(password)
         instance.save()
         return instance
+    
+class MeListSerializers(serializers.ModelSerializer):
+    profile = ProfileShortSerializers()
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'username',
+            'phone_number',
+            'profile',
+            'date_joined',
+        )
+
+
+class MeUpdateSerializers(serializers.ModelSerializer):
+    profile = ProfileUpdateSerializers()
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'username',
+            'phone_number',
+            'profile',
+        )
+
+    def update(self, instance, validated_data):
+        # Проверка наличия профиля
+        profile_data = validated_data.pop('profile') if 'profile' in validated_data else None
+
+        with transaction.atomic():
+            instance = super().update(instance, validated_data)
+            self._update_profile(instance.profile, profile_data)
+
+        return instance    
+
+    def _update_profile(self, profile, data):
+        profile_serializer = ProfileUpdateSerializers(
+            instance=profile,
+            data=data,
+            partial=True,
+        )
+        profile_serializer.is_valid(raise_exception=True)
+        profile_serializer.save()
