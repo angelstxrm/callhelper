@@ -7,11 +7,11 @@ User = get_user_model()
 class Organisation(models.Model):
     name = models.CharField('Название', max_length=100)
     director = models.ForeignKey(
-        User, models.RESTRICT, related_name='organisation_directors',
+        User, models.RESTRICT, related_name='organisations_directors',
         verbose_name='Директор',
     )
     employees = models.ManyToManyField(
-        User, related_name='organisation_employees', verbose_name='Сотрудники', blank=True,
+        User, related_name='organisations_employees', verbose_name='Сотрудники', blank=True,
     )
 
     class Meta:
